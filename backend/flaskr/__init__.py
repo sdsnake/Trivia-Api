@@ -41,7 +41,7 @@ def create_app(test_config=None):
         formated_categories = [category.format() for category in categories]
         return jsonify({
             'success': True,
-            'categories': formated_categories
+            'categories': formated_categories,
         })
     '''
   @TODO:
@@ -55,7 +55,14 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions.
   '''
-
+    @app.route('/questions/', methods=['GET'])
+    def get_questions():
+        questions = Question.query.all()
+        formated_questions = [question.format() for question in questions]
+        return jsonify({
+            'success': True,
+            'categories': formated_questions,
+        })
     '''
   @TODO:
   Create an endpoint to DELETE question using a question ID.
