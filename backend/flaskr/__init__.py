@@ -59,9 +59,12 @@ def create_app(test_config=None):
     def get_questions():
         questions = Question.query.all()
         formated_questions = [question.format() for question in questions]
+        categories = Category.query.all()
+        formated_categories = [category.format() for category in categories]
         return jsonify({
             'success': True,
-            'categories': formated_questions,
+            'questions': formated_questions,
+            'categories': formated_categories
         })
     '''
   @TODO:
