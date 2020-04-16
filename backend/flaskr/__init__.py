@@ -43,6 +43,18 @@ def create_app(test_config=None):
             'success': True,
             'categories': formated_categories,
         })
+
+    QUESTIONS_PER_SHELF = 10
+
+    def paginate_questions(request, selection):
+        page = request.args.get('page', 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_SHELF
+        end = start + QUESTIONS_PER_SHELF
+
+        questions = [question.format() for question in selection]
+        current_questions = questions[start:end]
+
+        return current_questions
     '''
   @TODO:
   Create an endpoint to handle GET requests for questions,
@@ -57,13 +69,13 @@ def create_app(test_config=None):
   '''
     @app.route('/questions/', methods=['GET'])
     def get_questions():
-        questions = Question.query.all()
-        formated_questions = [question.format() for question in questions]
+        selection = Question.query.all()
+        current_questions = paginate_questions(request, selection)
         categories = Category.query.all()
         formated_categories = [category.format() for category in categories]
         return jsonify({
             'success': True,
-            'questions': formated_questions,
+            'questions': current_questions,
             'categories': formated_categories
         })
     '''

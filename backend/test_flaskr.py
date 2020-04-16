@@ -43,6 +43,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['categories'])
         self.assertTrue(data['questions'])
+        self.assertEqual(len(data['questions']), 10)
 
 
 # Make the tests conveniently executable
