@@ -1,12 +1,23 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import random
 
 from models import setup_db, Question, Category
 
-QUESTIONS_PER_PAGE = 10
+QUESTIONS_PER_SHELF = 10
+
+
+def paginate_questions(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_SHELF
+    end = start + QUESTIONS_PER_SHELF
+
+    questions = [question.format() for question in selection]
+    current_questions = questions[start:end]
+
+    return current_questions
 
 
 def create_app(test_config=None):
@@ -15,11 +26,11 @@ def create_app(test_config=None):
     setup_db(app)
 
     '''
-  @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+  Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    cors = CORS(app, resources={r"*": {"origins": "*"}})
     '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
+  Use the after_request decorator to set Access-Control-Allow
   '''
     # CORS Headers
     @app.after_request
@@ -38,23 +49,12 @@ def create_app(test_config=None):
     @app.route('/categories/', methods=['GET'])
     def get_categories():
         categories = Category.query.all()
-        formated_categories = [category.format() for category in categories]
+        formated_categories = {
+            category.id: category.type for category in Category.query.all()}
         return jsonify({
             'success': True,
-            'categories': formated_categories,
+            'categories': formated_categories
         })
-
-    QUESTIONS_PER_SHELF = 10
-
-    def paginate_questions(request, selection):
-        page = request.args.get('page', 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_SHELF
-        end = start + QUESTIONS_PER_SHELF
-
-        questions = [question.format() for question in selection]
-        current_questions = questions[start:end]
-
-        return current_questions
     '''
   @TODO:
   Create an endpoint to handle GET requests for questions,
@@ -71,12 +71,15 @@ def create_app(test_config=None):
     def get_questions():
         selection = Question.query.all()
         current_questions = paginate_questions(request, selection)
-        categories = Category.query.all()
-        formated_categories = [category.format() for category in categories]
+
+        formated_categories = {
+            category.id: category.type for category in Category.query.all()}
         return jsonify({
             'success': True,
             'questions': current_questions,
-            'categories': formated_categories
+            'categories': formated_categories,
+            'total_questions': len(selection),
+            'current_category': []
         })
     '''
   @TODO:
