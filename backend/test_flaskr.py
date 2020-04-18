@@ -19,12 +19,6 @@ class TriviaTestCase(unittest.TestCase):
             'postgres', 'password', 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
-        self.new_question = {
-            'question': 'Color of Milk',
-            'answer': 'White',
-            'difficulty': 1,
-            'category': 4
-        }
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -52,8 +46,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['total_questions'], len(Question.query.all()))
         self.assertEqual(len(data['questions']), 10)
 
+    def test_create_new_question(self):
+        new_question = {
+            'id': 67,
+            'question': 'Color of Milk',
+            'answer': 'White',
+            'difficulty': 1,
+            'category': 4
+        }
+        res = self.client().post('/questions', data=json.dumps(new_question),
+                                 headers={'Content-Type': 'application/json'})
+        data = json.loads(res.data)
+
+        self.assertTrue(res.status_code, 201)
+        self.assertEqual(data['success'], True)
+
     def test_delete_question(self):
-        res = self.client().delete('/questions/1')
+        res = self.client().delete('/questions/67')
         data = json.loads(res.data)
 
         question = Question.query.filter(Question.id == 1).one_or_none()
@@ -64,15 +73,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
-
-    def test_create_new_question(self):
-        res = self.client.post('/questions', json=self.new_question)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['created'])
-        self.assertTrue(len(data['question']))
 
 
 # Make the tests conveniently executable

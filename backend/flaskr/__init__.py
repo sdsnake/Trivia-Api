@@ -28,7 +28,8 @@ def create_app(test_config=None):
     '''
   Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
-    cors = CORS(app, resources={r"*": {"origins": "*"}})
+    cors = CORS(app, resources={r"*": {"origins": "*"}},
+                supports_credentials=True)
     '''
   Use the after_request decorator to set Access-Control-Allow
   '''
@@ -120,7 +121,29 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.
   '''
+    @app.route('/questions/', methods=['POST'])
+    @cross_origin(supports_credentials=True)
+    def create_question():
+        body = request.get_json()
 
+        new_question = body.get('question', None)
+        new_answer = body.get('answer', None)
+        difficulty = body.get('difficulty', None)
+        category = body.get('category', None)
+
+        question = Question(question=new_question, answer=new_answer,
+                            difficulty=difficulty, category=category)
+        question.insert()
+
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
+
+        return jsonify({
+            'success': True,
+            'questions': current_questions,
+            'created': question.id,
+            'total_questions': len(Question.query.all())
+        })
     '''
   @TODO:
   Create a POST endpoint to get questions based on a search term.
