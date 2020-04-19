@@ -43,7 +43,6 @@ def create_app(test_config=None):
         return response
 
     '''
-  @TODO:
   Create an endpoint to handle GET requests
   for all available categories.
   '''
@@ -57,7 +56,6 @@ def create_app(test_config=None):
             'categories': formated_categories
         })
     '''
-  @TODO:
   Create an endpoint to handle GET requests for questions,
   including pagination (every 10 questions).
   This endpoint should return a list of questions,
@@ -130,22 +128,23 @@ def create_app(test_config=None):
         new_answer = body.get('answer', None)
         difficulty = body.get('difficulty', None)
         category = body.get('category', None)
+        try:
+            question = Question(question=new_question, answer=new_answer,
+                                difficulty=difficulty, category=category)
+            question.insert()
 
-        question = Question(question=new_question, answer=new_answer,
-                            difficulty=difficulty, category=category)
-        question.insert()
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
 
-        selection = Question.query.order_by(Question.id).all()
-        current_questions = paginate_questions(request, selection)
-
-        return jsonify({
-            'success': True,
-            'questions': current_questions,
-            'created': question.id,
-            'total_questions': len(Question.query.all())
-        })
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'created': question.id,
+                'total_questions': len(Question.query.all())
+            })
+        except:
+            abort(422)
     '''
-  @TODO:
   Create a POST endpoint to get questions based on a search term.
   It should return any questions for whom the search term
   is a substring of the question.

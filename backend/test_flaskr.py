@@ -48,28 +48,29 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_create_new_question(self):
         new_question = {
-            'id': 67,
+            'id': 25,
             'question': 'Color of Milk',
             'answer': 'White',
             'difficulty': 1,
             'category': 4
         }
-        res = self.client().post('/questions', data=json.dumps(new_question),
-                                 headers={'Content-Type': 'application/json'})
+        res = self.client().post('/questions/', json=new_question)
         data = json.loads(res.data)
 
-        self.assertTrue(res.status_code, 201)
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/67')
+        res = self.client().delete('/questions/28')
         data = json.loads(res.data)
 
         question = Question.query.filter(Question.id == 1).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 1)
+        self.assertEqual(data['deleted'], 28)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
