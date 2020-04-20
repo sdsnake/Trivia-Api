@@ -135,27 +135,29 @@ def create_app(test_config=None):
                 selection = Question.query.order_by(Question.id).filter(
                     Question.question.ilike('%{}%'.format(search)))
                 current_questions = paginate_questions(request, selection)
+                print(selection)
+                print(current_questions)
 
                 return jsonify({
-                    'succes': True,
-                    'books': current_books,
-                    'total_books': len(selection.all())
-
+                    'success': True,
+                    'questions': current_questions,
+                    'total_questions': len(Question.query.all()),
+                    'current_category': [(question['category'])
+                                         for question in current_questions]
                 })
+            else:
+                question = Question(question=new_question, answer=new_answer,
+                                    difficulty=difficulty, category=category)
+                question.insert()
 
-            question = Question(question=new_question, answer=new_answer,
-                                difficulty=difficulty, category=category)
-            question.insert()
-
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
-
-            return jsonify({
-                'success': True,
-                'questions': current_questions,
-                'created': question.id,
-                'total_questions': len(Question.query.all())
-            })
+                selection = Question.query.order_by(Question.id).all()
+                current_questions = paginate_questions(request, selection)
+                return jsonify({
+                    'success': True,
+                    'questions': current_questions,
+                    'created': question.id,
+                    'total_questions': len(Question.query.all())
+                })
 
         except:
             abort(422)

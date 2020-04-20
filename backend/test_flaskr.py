@@ -77,7 +77,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_question_search(self):
         search_term = {
-            'searchTerm': 'test'
+            'searchTerm': 'title'
         }
         res = self.client().post('/questions/', json=search_term)
         data = json.loads(res.data)
