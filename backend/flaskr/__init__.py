@@ -128,7 +128,21 @@ def create_app(test_config=None):
         new_answer = body.get('answer', None)
         difficulty = body.get('difficulty', None)
         category = body.get('category', None)
+        search = body.get('searchTerm', None)
+
         try:
+            if search:
+                selection = Question.query.order_by(Question.id).filter(
+                    Question.question.ilike('%{}%'.format(search)))
+                current_questions = paginate_questions(request, selection)
+
+                return jsonify({
+                    'succes': True,
+                    'books': current_books,
+                    'total_books': len(selection.all())
+
+                })
+
             question = Question(question=new_question, answer=new_answer,
                                 difficulty=difficulty, category=category)
             question.insert()
@@ -142,6 +156,7 @@ def create_app(test_config=None):
                 'created': question.id,
                 'total_questions': len(Question.query.all())
             })
+
         except:
             abort(422)
     '''
@@ -179,5 +194,20 @@ def create_app(test_config=None):
   Create error handlers for all expected errors
   including 404 and 422.
   '''
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "Not found"
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "Not found"
+        }), 422
 
     return app
