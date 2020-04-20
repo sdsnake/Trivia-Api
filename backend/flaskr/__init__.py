@@ -81,8 +81,7 @@ def create_app(test_config=None):
             'current_category': []
         })
     '''
-  @TODO:
-  Create an endpoint to DELETE question using a question ID.
+  An endpoint to DELETE question using a question ID.
 
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page.
@@ -110,8 +109,7 @@ def create_app(test_config=None):
             'current_category': []
         })
     '''
-  @TODO:
-  Create an endpoint to POST a new question,
+  An endpoint to POST a new question,
   which will require the question and answer text,
   category, and difficulty score.
 
@@ -144,6 +142,15 @@ def create_app(test_config=None):
             })
         except:
             abort(422)
+    '''
+  Create a POST endpoint to get questions based on a search term.
+  It should return any questions for whom the search term
+  is a substring of the question.
+
+  TEST: Search by any phrase. The questions list will update to include
+  only question that include that string within their question.
+  Try using the word "title" to start.
+  '''
 
     @app.route('/questions/search/', methods=['POST'])
     @cross_origin(supports_credentials=True)
@@ -154,8 +161,6 @@ def create_app(test_config=None):
             selection = Question.query.order_by(Question.id).filter(
                 Question.question.ilike('%{}%'.format(search)))
             current_questions = paginate_questions(request, selection)
-            print(selection)
-            print(current_questions)
 
             return jsonify({
                 'success': True,
@@ -163,16 +168,6 @@ def create_app(test_config=None):
                 'total_questions': len(Question.query.all()),
                 'current_category': []
             })
-
-    '''
-  Create a POST endpoint to get questions based on a search term.
-  It should return any questions for whom the search term
-  is a substring of the question.
-
-  TEST: Search by any phrase. The questions list will update to include
-  only question that include that string within their question.
-  Try using the word "title" to start.
-  '''
 
     '''
   @TODO:
