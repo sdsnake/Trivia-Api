@@ -142,6 +142,7 @@ def create_app(test_config=None):
             })
         except:
             abort(422)
+
     '''
   Create a POST endpoint to get questions based on a search term.
   It should return any questions for whom the search term
@@ -176,6 +177,22 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that
   category to be shown.
   '''
+    @app.route('/categories/<int:category_id>/questions/', methods=['GET'])
+    def get_questions_by_category(category_id):
+        print(category_id)
+        selection = Question.query.filter(
+            Question.category == category_id).all()
+        print(selection)
+        current_questions = paginate_questions(request, selection)
+        current_category = Category.query.filter(
+            Category.id == category_id).one_or_none()
+        return jsonify({
+            'success': True,
+            'questions': current_questions,
+            'total_questions': len(selection),
+            'current_category': current_category.format()
+        })
+
     '''
   @TODO:
   Create a POST endpoint to get questions to play the quiz.

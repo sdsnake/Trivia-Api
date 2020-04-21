@@ -69,11 +69,13 @@ class QuestionView extends Component {
       url: `/categories/${id}/questions`, //TODO: update request URL
       type: "GET",
       success: (result) => {
+        console.log(result.questions);
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
           currentCategory: result.current_category,
         });
+
         return;
       },
       error: (error) => {
@@ -145,6 +147,7 @@ class QuestionView extends Component {
                 key={id}
                 onClick={() => {
                   this.getByCategory(id);
+                  console.log(id);
                 }}
               >
                 {this.state.categories[id]}
