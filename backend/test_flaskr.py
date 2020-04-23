@@ -90,11 +90,21 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().get('/categories/2/questions/')
         data = json.loads(res.data)
 
-        questions = Question.query.filter(Category.id == 2).all()
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(len(data['questions']), 4)
+
+    def test_quizzes(self):
+        previous_questions = {'previous_questions': [20],
+                              'quiz_category': {'id': '5',
+                                                'type': 'History'}}
+        res = self.client().post('/quizzes/', json=previous_questions)
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(len(data['questions']), 4)
+        self.assertTrue(data['question'])
 
 
 # Make the tests conveniently executable

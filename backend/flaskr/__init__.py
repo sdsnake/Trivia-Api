@@ -2,7 +2,9 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
+from sqlalchemy.sql.expression import func
 import random
+import json
 
 from models import setup_db, Question, Category
 
@@ -26,12 +28,12 @@ def create_app(test_config=None):
     setup_db(app)
 
     '''
-  Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+  CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
     cors = CORS(app, resources={r"*": {"origins": "*"}},
                 supports_credentials=True)
     '''
-  Use the after_request decorator to set Access-Control-Allow
+  after_request decorator to set Access-Control-Allow
   '''
     # CORS Headers
     @app.after_request
@@ -56,7 +58,7 @@ def create_app(test_config=None):
             'categories': formated_categories
         })
     '''
-  Create an endpoint to handle GET requests for questions,
+  GET requests for questions,
   including pagination (every 10 questions).
   This endpoint should return a list of questions,
   number of total questions, current category, categories.
@@ -204,9 +206,40 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
-
+    @app.route("/quizzes/", methods=['POST'])
+    def play_quizzes():
+        current_question = Question.query.order_by(
+            func.random()).first()
+        if request.data:
+            search_data = json.loads(request.data.decode('utf-8'))
+            if (('quiz_category' in search_data
+                 and 'id' in search_data['quiz_category'])
+                    and 'previous_questions' in search_data):
+                questions_query = Question.query.filter_by(
+                    category=search_data['quiz_category']['id']
+                ).filter(
+                    Question.id.notin_(search_data["previous_questions"])
+                ).all()
+                length_of_available_question = len(questions_query)
+                if length_of_available_question > 0:
+                    result = {
+                        "success": True,
+                        "question": Question.format(
+                            questions_query[random.randrange(
+                                0,
+                                length_of_available_question
+                            )]
+                        )
+                    }
+                else:
+                    result = {
+                        "success": True,
+                        "question": current_question.format()
+                    }
+                return jsonify(result)
+            abort(404)
+        abort(422)
     '''
-  @TODO:
   Create error handlers for all expected errors
   including 404 and 422.
   '''
