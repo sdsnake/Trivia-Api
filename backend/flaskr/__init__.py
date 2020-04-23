@@ -111,8 +111,8 @@ def create_app(test_config=None):
             'current_category': []
         })
     '''
-  An endpoint to POST a new question,
-  which will require the question and answer text,
+  POST a new question,
+  which  require the question and answer text,
   category, and difficulty score.
 
   TEST: When you submit a question on the "Add" tab,
@@ -146,8 +146,8 @@ def create_app(test_config=None):
             abort(422)
 
     '''
-  Create a POST endpoint to get questions based on a search term.
-  It should return any questions for whom the search term
+  POST endpoint to get questions based on a search term.
+  return any questions for whom the search term
   is a substring of the question.
 
   TEST: Search by any phrase. The questions list will update to include
@@ -173,7 +173,7 @@ def create_app(test_config=None):
             })
 
     '''
-  Create a GET endpoint to get questions based on category.
+  GET endpoint to get questions based on category.
 
   TEST: In the "List" tab / main screen, clicking on one of the
   categories in the left column will cause only questions of that
@@ -196,9 +196,8 @@ def create_app(test_config=None):
         })
 
     '''
-  @TODO:
-  Create a POST endpoint to get questions to play the quiz.
-  This endpoint should take category and previous question parameters
+  POST endpoint to get questions to play the quiz.
+  This endpoint take category and previous question parameters
   and return a random questions within the given category,
   if provided, and that is not one of the previous questions.
 
@@ -240,7 +239,7 @@ def create_app(test_config=None):
             abort(404)
         abort(422)
     '''
-  Create error handlers for all expected errors
+  Erros handlers for all expected errors
   including 404 and 422.
   '''
     @app.errorhandler(404)
