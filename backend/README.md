@@ -88,7 +88,47 @@ GET '/categories'
 '6' : "Sports"}
 
 ```
+## ENDPOINTS
+GET `/questions/`
 
+- Return paginated 10 questions per page.
+- Request Arguments: argument `page` for pagination per page. example: `/questions?page=2`
+- Return a list of questions object, success status and total number of questions with categories object.
+```
+
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": [],
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    
+   ...,
+  "success": true,
+  "total_questions": 21
+}
+
+
+```
 
 ## Testing
 To run the tests, run
