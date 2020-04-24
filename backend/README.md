@@ -130,6 +130,98 @@ GET `/questions/`
 
 ```
 
+GET `/categories/`
+
+- Return all categories.
+- Request Arguments: Nove
+- Return a list of categories object.
+```
+{
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "success": true
+}
+
+```
+
+GET `/categories/<int:category_id>/questions`
+
+- Return paginated 10 questions per page by category.
+- Request Arguments: page id and argument `page` for pagination per page. example: `/categories/2/questions?page=2`
+- Return a list of questions object, success status and total number of questions with categories object.
+
+```
+
+{
+    "current_category": {
+        "id": 3,
+        "type": "Geography"
+    },
+    "questions": [
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": true,
+    "total_questions": 3
+}
+{
+    "current_category": {
+        "id": 3,
+        "type": "Geography"
+    },
+    "questions": [
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": true,
+    "total_questions": 3
+}
+
+```
 ## Testing
 To run the tests, run
 ```
