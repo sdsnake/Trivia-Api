@@ -189,39 +189,86 @@ GET `/categories/<int:category_id>/questions`
     "success": true,
     "total_questions": 3
 }
+
+```
+
+DELETE `/questions/<int:question_id>`
+
+- Delete a question by his id.
+- Request Arguments: question id`
+- Return a list of questions object, success status and total number of questions with categories object.
+
+```
 {
-    "current_category": {
-        "id": 3,
-        "type": "Geography"
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": [],
+  "deleted": 1,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
     },
-    "questions": [
-        {
-            "answer": "Lake Victoria",
-            "category": 3,
-            "difficulty": 2,
-            "id": 13,
-            "question": "What is the largest lake in Africa?"
-        },
-        {
-            "answer": "The Palace of Versailles",
-            "category": 3,
-            "difficulty": 3,
-            "id": 14,
-            "question": "In which royal palace would you find the Hall of Mirrors?"
-        },
-        {
-            "answer": "Agra",
-            "category": 3,
-            "difficulty": 2,
-            "id": 15,
-            "question": "The Taj Mahal is located in which Indian city?"
-        }
-    ],
-    "success": true,
-    "total_questions": 3
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    ...
+  ],
+  "success": true,
+  "total_questions": 20
 }
 
 ```
+
+POST `/questions/`
+
+- Search question by term.
+- Request Arguments: take the search term.`
+- Return a list of questions object, success status and total number of questions with categories object.
+
+```
+
+{
+    "searchTerm":"title"
+}
+
+{
+  "current_category": [],
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ],
+  "success": true,
+  "total_questions": 20
+}
+
+```
+
 ## Testing
 To run the tests, run
 ```
