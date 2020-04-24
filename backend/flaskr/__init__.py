@@ -258,4 +258,20 @@ def create_app(test_config=None):
             "message": "Not found"
         }), 422
 
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "Not found"
+        }), 400
+
+    @app.errorhandler(500)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": "Not authorized"
+        }), 500
+
     return app
