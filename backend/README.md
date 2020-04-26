@@ -268,7 +268,75 @@ POST `/questions/`
 }
 
 ```
+GET `'/categories/<int:category_id>/questions/'`
 
+- questions of specified category.
+- Request Arguments: category id`
+- Return a list of questions object, success status and total number of questions with the current category.
+
+```
+{
+    "current_category": {
+        "id": 1,
+        "type": "Science"
+    },
+    "questions": [
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        },
+        {
+            "answer": "ok",
+            "category": 1,
+            "difficulty": 1,
+            "id": 79,
+            "question": "ok"
+        }
+    ],
+    "success": true,
+    "total_questions": 4
+}
+
+```
+
+POST `/quizzes/`
+
+- Get questions to play the quiz.
+- Request Arguments: None
+- Take category and previous question parameters.
+- Return a random questions within the given category.
+
+```
+
+{
+  "question": {
+    "answer": "The Liver",
+    "category": 1,
+    "difficulty": 4,
+    "id": 20,
+    "question": "What is the heaviest organ in the human body?"
+  },
+  "success": true
+}
+
+```
 ## Testing
 To run the tests, run
 ```
