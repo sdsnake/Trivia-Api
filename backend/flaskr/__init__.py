@@ -50,13 +50,16 @@ def create_app(test_config=None):
   '''
     @app.route('/categories/', methods=['GET'])
     def get_categories():
-        categories = Category.query.all()
-        formated_categories = {
-            category.id: category.type for category in Category.query.all()}
-        return jsonify({
-            'success': True,
-            'categories': formated_categories
-        })
+        try:
+            categories = Category.query.all()
+            formated_categories = {
+                category.id: category.type for category in categories}
+            return jsonify({
+                'success': True,
+                'categories': formated_categories
+            })
+        except:
+            abort(422)
     '''
   GET requests for questions,
   including pagination (every 10 questions).
@@ -72,6 +75,9 @@ def create_app(test_config=None):
     def get_questions():
         selection = Question.query.all()
         current_questions = paginate_questions(request, selection)
+
+        if (len(current_questions) == 0):
+            abort(404)
 
         formated_categories = {
             category.id: category.type for category in Category.query.all()}
@@ -160,17 +166,20 @@ def create_app(test_config=None):
     def search_question():
         body = request.get_json()
         search = body.get('searchTerm', None)
-        if search:
-            selection = Question.query.order_by(Question.id).filter(
-                Question.question.ilike('%{}%'.format(search)))
-            current_questions = paginate_questions(request, selection)
+        try:
+            if search:
+                selection = Question.query.order_by(Question.id).filter(
+                    Question.question.ilike('%{}%'.format(search)))
+                current_questions = paginate_questions(request, selection)
 
-            return jsonify({
-                'success': True,
-                'questions': current_questions,
-                'total_questions': len(Question.query.all()),
-                'current_category': []
-            })
+                return jsonify({
+                    'success': True,
+                    'questions': current_questions,
+                    'total_questions': len(Question.query.all()),
+                    'current_category': []
+                })
+        except:
+            abort(422)
 
     '''
   GET endpoint to get questions based on category.
@@ -181,19 +190,20 @@ def create_app(test_config=None):
   '''
     @app.route('/categories/<int:category_id>/questions/', methods=['GET'])
     def get_questions_by_category(category_id):
-        print(category_id)
-        selection = Question.query.filter(
-            Question.category == category_id).all()
-        print(selection)
-        current_questions = paginate_questions(request, selection)
-        current_category = Category.query.filter(
-            Category.id == category_id).one_or_none()
-        return jsonify({
-            'success': True,
-            'questions': current_questions,
-            'total_questions': len(selection),
-            'current_category': current_category.format()
-        })
+        try:
+            selection = Question.query.filter(
+                Question.category == category_id).all()
+            current_questions = paginate_questions(request, selection)
+            current_category = Category.query.filter(
+                Category.id == category_id).one_or_none()
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'total_questions': len(selection),
+                'current_category': current_category.format()
+            })
+        except:
+            abort(422)
 
     '''
   POST endpoint to get questions to play the quiz.
@@ -255,7 +265,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 422,
-            "message": "Not found"
+            "message": "Unprocessable"
         }), 422
 
     @app.errorhandler(400)
