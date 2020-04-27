@@ -30,8 +30,8 @@ def create_app(test_config=None):
     '''
   CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
-    cors = CORS(app, resources={r"*": {"origins": "*"}},
-                supports_credentials=True)
+    CORS(app, resources={r"*": {"origins": "*"}},
+         supports_credentials=True)
     '''
   after_request decorator to set Access-Control-Allow
   '''
@@ -73,21 +73,24 @@ def create_app(test_config=None):
   '''
     @app.route('/questions/', methods=['GET'])
     def get_questions():
-        selection = Question.query.all()
-        current_questions = paginate_questions(request, selection)
+        try:
+            selection = Question.query.all()
+            current_questions = paginate_questions(request, selection)
 
-        if (len(current_questions) == 0):
-            abort(404)
+            if (len(current_questions) == 0):
+                abort(404)
 
-        formated_categories = {
-            category.id: category.type for category in Category.query.all()}
-        return jsonify({
-            'success': True,
-            'questions': current_questions,
-            'categories': formated_categories,
-            'total_questions': len(selection),
-            'current_category': []
-        })
+            formated_categories = {
+                category.id: category.type for category in Category.query.all()}
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'categories': formated_categories,
+                'total_questions': len(selection),
+                'current_category': []
+            })
+        except:
+            abort(422)
     '''
   An endpoint to DELETE question using a question ID.
 
@@ -96,26 +99,29 @@ def create_app(test_config=None):
   '''
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
-        question = Question.query.filter(
-            Question.id == question_id).one_or_none()
+        try:
+            question = Question.query.filter(
+                Question.id == question_id).one_or_none()
 
-        if question is None:
-            abort(404)
-        question.delete()
+            if question is None:
+                abort(404)
+            question.delete()
 
-        selection = Question.query.all()
-        current_questions = paginate_questions(request, selection)
-        formated_categories = {
-            category.id: category.type for category in Category.query.all()}
+            selection = Question.query.all()
+            current_questions = paginate_questions(request, selection)
+            formated_categories = {
+                category.id: category.type for category in Category.query.all()}
 
-        return jsonify({
-            'success': True,
-            'deleted': question_id,
-            'questions': current_questions,
-            'categories': formated_categories,
-            'total_questions': len(selection),
-            'current_category': []
-        })
+            return jsonify({
+                'success': True,
+                'deleted': question_id,
+                'questions': current_questions,
+                'categories': formated_categories,
+                'total_questions': len(selection),
+                'current_category': []
+            })
+        except:
+            abort(422)
     '''
   POST a new question,
   which  require the question and answer text,
@@ -128,14 +134,14 @@ def create_app(test_config=None):
     @app.route('/questions/', methods=['POST'])
     @cross_origin(supports_credentials=True)
     def create_question():
-        body = request.get_json()
-
-        new_question = body.get('question', None)
-        new_answer = body.get('answer', None)
-        difficulty = body.get('difficulty', None)
-        category = body.get('category', None)
-
         try:
+            body = request.get_json()
+
+            new_question = body.get('question', None)
+            new_answer = body.get('answer', None)
+            difficulty = body.get('difficulty', None)
+            category = body.get('category', None)
+
             question = Question(question=new_question, answer=new_answer,
                                 difficulty=difficulty, category=category)
             question.insert()
@@ -164,9 +170,10 @@ def create_app(test_config=None):
     @app.route('/questions/search/', methods=['POST'])
     @cross_origin(supports_credentials=True)
     def search_question():
-        body = request.get_json()
-        search = body.get('searchTerm', None)
         try:
+            body = request.get_json()
+            search = body.get('searchTerm', None)
+
             if search:
                 selection = Question.query.order_by(Question.id).filter(
                     Question.question.ilike('%{}%'.format(search)))
