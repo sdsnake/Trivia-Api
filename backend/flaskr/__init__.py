@@ -48,7 +48,7 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests
   for all available categories.
   '''
-    @app.route('/categories/', methods=['GET'])
+    @app.route('/categories', methods=['GET'])
     def get_categories():
         try:
             categories = Category.query.all()
@@ -71,7 +71,7 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions.
   '''
-    @app.route('/questions/', methods=['GET'])
+    @app.route('/questions', methods=['GET'])
     def get_questions():
         try:
             selection = Question.query.all()
@@ -131,7 +131,7 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.
   '''
-    @app.route('/questions/', methods=['POST'])
+    @app.route('/questions', methods=['POST'])
     @cross_origin(supports_credentials=True)
     def create_question():
         try:
@@ -167,7 +167,7 @@ def create_app(test_config=None):
   Try using the word "title" to start.
   '''
 
-    @app.route('/questions/search/', methods=['POST'])
+    @app.route('/questions/search', methods=['POST'])
     @cross_origin(supports_credentials=True)
     def search_question():
         try:
@@ -195,7 +195,7 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that
   category to be shown.
   '''
-    @app.route('/categories/<int:category_id>/questions/', methods=['GET'])
+    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
         try:
             selection = Question.query.filter(
@@ -222,7 +222,7 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
-    @app.route("/quizzes/", methods=['POST'])
+    @app.route("/quizzes", methods=['POST'])
     def play_quizzes():
         current_question = Question.query.order_by(
             func.random()).first()
