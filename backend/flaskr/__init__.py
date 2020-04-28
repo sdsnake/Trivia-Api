@@ -121,7 +121,7 @@ def create_app(test_config=None):
                 'current_category': []
             })
         except:
-            abort(422)
+            abort(404)
     '''
   POST a new question,
   which  require the question and answer text,
@@ -155,7 +155,7 @@ def create_app(test_config=None):
                 'total_questions': len(Question.query.all())
             })
         except:
-            abort(422)
+            abort(405)
 
     '''
   POST endpoint to get questions based on a search term.
@@ -210,7 +210,7 @@ def create_app(test_config=None):
                 'current_category': current_category.format()
             })
         except:
-            abort(422)
+            abort(404)
 
     '''
   POST endpoint to get questions to play the quiz.
